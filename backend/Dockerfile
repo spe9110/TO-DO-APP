@@ -6,16 +6,21 @@ COPY package*.json ./
 # ---------- Development ----------
 FROM base AS development
 ENV NODE_ENV=development
-RUN npm install 
-COPY . .  
+# Install all dependencies including dev dependencies for development
+RUN npm install
+COPY . .  # Copy the rest of the app code after installing dependencies
 EXPOSE 3000
 CMD ["npm", "run", "dev"]
 
 # ---------- Production ----------
 FROM base AS production
 ENV NODE_ENV=production
-# Check if package-lock.json exists, and if not, use npm install
-RUN if [ -f package-lock.json ]; then npm ci --omit=dev; else npm install --omit=dev; fi
+
+# Only install production dependencies
+RUN if [ -f package-lock.json ]; then npm ci --only=production; else npm install --production; fi
+
+# Copy the rest of the app code
 COPY . .
+
 EXPOSE 3000
 CMD ["npm", "run", "start"]
