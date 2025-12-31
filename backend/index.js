@@ -23,7 +23,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors({
   credentials: true,
-  origin: process.env.CLIENT_URL,
+  origin: process.env.CLIENT_URL || 'https://spe9110.github.io',
 }));
 
 app.use(express.json());
