@@ -1,0 +1,17 @@
+# Node modules
+node_modules/
+/.env
+/coverage
+.DS_Store
+npm-debug.log
+yarn-error.log
+
+
+# Logs
+logs
+*.log
+
+package-lock.json
+yarn.lock
+
+.env.local

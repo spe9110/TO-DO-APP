@@ -1,0 +1,81 @@
+name: Todo App CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  # CI: Testing and Building the Project
+  ci:
+    runs-on: ubuntu-latest
+    name: Setup, test, and build project
+    env:
+      PORT: 5001
+    steps:
+      # 1) Checkout code
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2) Set up Node.js (for backend)
+      - name: Set up Node.js for Backend
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22'  # Adjust Node version as required
+
+      # 3) Install backend dependencies
+      - name: Install backend dependencies
+        working-directory: ./backend
+        run: npm install
+
+      # 4) Run backend tests
+      - name: Run backend tests
+        working-directory: ./backend
+        run: npm test
+
+      # 5) Install frontend dependencies
+      - name: Install frontend dependencies
+        working-directory: ./frontend
+        run: npm install
+
+      # 6) Run frontend tests
+      - name: Run frontend tests
+        working-directory: ./frontend
+        run: npm test
+
+      # 7) Build backend Docker image
+      - name: Build backend Docker image
+        run: docker build -t my-backend ./backend
+
+      # 8) Build frontend Docker image
+      - name: Build frontend Docker image
+        run: docker build -t my-frontend ./frontend
+
+  # CD: Deploying the Application
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    needs: ci  # Ensure deployment runs after the CI job completes successfully
+    steps:
+      # 1) Checkout code
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2) Set up Docker
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v3
+
+      # 3) Deploy the backend (you need to add your specific deployment steps here, e.g., to AWS, Azure, etc.)
+      - name: Deploy backend
+        run: |
+          # Example command for deploying the backend Docker container
+          docker run -d -p 5001:5001 my-backend
+
+      # 4) Deploy the frontend (you need to add your specific deployment steps here)
+      - name: Deploy frontend
+        run: |
+          # Example command for deploying the frontend Docker container
+          docker run -d -p 80:80 my-frontend
