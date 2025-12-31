@@ -1,9 +1,12 @@
 {
+  "homepage": "https://spe9110.github.io/TO-DO-APP",
   "name": "frontend",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
@@ -16,6 +19,7 @@
     "@tanstack/react-query": "^5.90.16",
     "@tanstack/react-query-devtools": "^5.91.2",
     "axios": "^1.13.2",
+    "gh-pages": "^6.3.0",
     "react": "^19.2.0",
     "react-cookie-consent": "^9.0.0",
     "react-dom": "^19.2.0",
