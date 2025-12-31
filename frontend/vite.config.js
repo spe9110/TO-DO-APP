@@ -13,8 +13,7 @@ export default defineConfig({
     },
     proxy: {
       '/api/v1': {
-        target: "http://todo-backend:3000",
-        // target: 'http://localhost:3000',
+        target: "https://to-do-app-kpx0.onrender.com",
         changeOrigin: true
       }
     }
