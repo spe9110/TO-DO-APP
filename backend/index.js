@@ -23,7 +23,10 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors({
   credentials: true,
-  origin: process.env.CLIENT_URL || 'https://spe9110.github.io',
+  origin: [
+    'https://spe9110.github.io',  // Allow production frontend URL
+    'http://localhost:5173'       // Allow local development URL
+  ]
 }));
 
 app.use(express.json());
