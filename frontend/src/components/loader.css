@@ -1,0 +1,54 @@
+/* Center wrapper */
+.loader-container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: radial-gradient(circle at center, #f0f4ff, #dbe1f5);
+}
+
+/* Beautiful glowing ring loader */
+.loader-ring {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  border: 6px solid transparent;
+  border-top-color: #4f46e5;         /* Indigo */
+  border-right-color: #3b82f6;       /* Blue */
+  border-bottom-color: #6366f1;      /* Purple */
+  animation: spin 1s linear infinite;
+  box-shadow: 0 0 12px rgba(99, 102, 241, 0.6),
+              0 0 20px rgba(59, 130, 246, 0.4);
+}
+
+/* Smooth rotation */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+    filter: hue-rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+    filter: hue-rotate(360deg);
+  }
+}
+
+/* Text styling */
+.loader-text {
+  margin-top: 12px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #1e3a8a;
+  animation: fade 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes fade {
+  from {
+    opacity: 0.3;
+  }
+  to {
+    opacity: 1;
+  }
+}

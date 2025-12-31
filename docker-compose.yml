@@ -1,0 +1,79 @@
+
+services:
+  mongo:
+    image: mongodb/mongodb-atlas-local:8.0
+    container_name: todo-mongo
+    ports:
+      - "27017:27017"
+    networks:
+      - monitoring
+
+  backend:
+    build:
+      context: ./backend
+      target: development
+    container_name: todo-backend
+    ports:
+      - "3000:3000"
+      - "9100:9100"
+    networks:
+      - monitoring
+    environment:
+      - MONGO_URI=${MONGO_URI}
+      - NODE_ENV=development
+      - PORT=3000
+    volumes:
+      - ./backend:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - mongo
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: todo-prometheus
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - monitoring
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
+    ports:
+    - "3001:3000"
+    networks:
+      - monitoring
+    depends_on:
+      - prometheus
+  frontend:
+    build:
+      context: ./frontend
+      target: development  # use 'production' for prod
+    container_name: todo-frontend
+    ports:
+      - "5173:5173"          # dev server port
+      - "80:80"              # production port (optional)
+    environment:
+      - VITE_API_URL=http://backend:3000
+    volumes:
+      - ./frontend:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - backend
+    networks:
+    - monitoring
+
+volumes:
+  # mongo-data:
+  todo_mongo-data:
+
+networks:
+  monitoring:
+    driver: bridge

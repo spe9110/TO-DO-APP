@@ -1,0 +1,7 @@
+node_modules       # avoid copying local modules
+dist               # frontend build output
+.env               # secrets / API keys
+npm-debug.log
+Dockerfile
+docker-compose.yml
+.vite              # Vite cache (optional)
