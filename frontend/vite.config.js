@@ -13,8 +13,8 @@ export default defineConfig({
     },
     proxy: {
       '/api/v1': {
-        // target: "http://todo-backend:3000",
-        target: 'http://localhost:3000',
+        target: "http://todo-backend:3000",
+        // target: 'http://localhost:3000',
         changeOrigin: true
       }
     }

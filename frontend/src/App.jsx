@@ -1,16 +1,20 @@
+import { lazy } from "react"
 import { Routes, Route } from "react-router-dom"
-import Home from "./pages/Home"
-import Signin from "./pages/Signin"
-import Signup from "./pages/Signup"
-import Unauthorized from "./pages/Unauthorized"
-import Layout from "./components/Layout"
-import PrivateRoute from "./components/PrivateRoute"
-import ErrorBoundary from "./components/ErrorBoundary"
-import ResetPassword from "./pages/ResetPassword"
+
+const Home = lazy(() => import("./pages/Home"));
+const Signin = lazy(() => import("./pages/Signin"));
+const Signup = lazy(() => import("./pages/Signup"));
+const Unauthorized = lazy(() => import("./pages/Unauthorized"));
+const Layout = lazy(() => import("./components/Layout"));
+const PrivateRoute = lazy(() => import("./components/PrivateRoute"));
+const ErrorBoundary = lazy(() => import("./components/ErrorBoundary"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword"));
+const PageNotFound = lazy(() => import("./components/PageNotFound"));
+
 import { ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
-import PageNotFound from "./components/PageNotFound"
-import { CookiesBanner } from "./components/CookieConsent"
+import { CookiesBanner } from "./components/CookieConsent" 
+
 
 function App() {
 

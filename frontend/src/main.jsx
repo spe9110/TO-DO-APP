@@ -11,6 +11,10 @@ import { DarkModeContextProvider } from './context/DarkModeContext.jsx'
 
 const queryClient = new QueryClient();
 
+
+// Use Vite's import.meta.env.MODE to check the environment
+const isDev = import.meta.env.MODE === 'development';
+
 createRoot(document.getElementById('root')).render(
 <StrictMode>
   <QueryClientProvider client={queryClient}>
@@ -21,7 +25,7 @@ createRoot(document.getElementById('root')).render(
         </BrowserRouter>
     </Provider>
       </DarkModeContextProvider>
-    <ReactQueryDevtools initialIsOpen={false} />
+    {isDev && <ReactQueryDevtools initialIsOpen={false} />}
   </QueryClientProvider>
 </StrictMode>,
 )

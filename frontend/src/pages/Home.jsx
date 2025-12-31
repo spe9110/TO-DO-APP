@@ -312,7 +312,7 @@ const Home = () => {
   if(status === "pending") return <Loader />;
 
   if(error) {
-    return <div className="w-full min-h-screen bg-gray-50 text-black dark:bg-gray-950 dark:text-white">
+    return <div className="w-full min-h-screen flex justify-center items-center bg-gray-950 dark:bg-gray-50 dark:text-white">
       <p className="text-white text-2xl">{error.message}</p>
     </div>;
   }
