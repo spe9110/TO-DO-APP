@@ -1,0 +1,15 @@
+{
+  "name": "Todo App",
+  "short_name": "Todo",
+  "start_url": "/TO-DO-APP/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4f46e5",
+  "icons": [
+    {
+      "src": "/TO-DO-APP/assets/favicon-32x32-DQjEQYWa-DQjEQYWa.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    }
+  ]
+}
