@@ -137,7 +137,7 @@ export const login = async (req, res, next) => {
         // FIXED: Correct variable name
         res.cookie("AccessToken", accessToken, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
+            secure: true,
             sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
             maxAge: 3600000, // 1 hour
         });

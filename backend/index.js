@@ -17,13 +17,16 @@ import "./Monitoring/systemMetrics.js"; // initializes gauges
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
 /* ---------- Core Middleware ---------- */
 
 app.use(cors({
   credentials: true,
-  origin: process.env.CLIENT_URL,
+  origin: [
+    "http://localhost:5173",
+    "https://spe9110.github.io"
+  ]
 }));
 
 app.use(express.json());

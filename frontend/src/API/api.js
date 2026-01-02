@@ -1,3 +1,6 @@
+import { API_BASE_URL } from "../../Util";
+console.log("API BASE URL:", API_BASE_URL);
+
 export const fetchTodos = async ({ pageParam, userId }) => {
   const limit = 9;
 
@@ -6,11 +9,14 @@ export const fetchTodos = async ({ pageParam, userId }) => {
   if (pageParam !== null && pageParam !== undefined) {
     params.append("cursor", pageParam);
   }
-
+  
   const response = await fetch(
-    `/api/v1/todo/user/${userId}?${params.toString()}`,
+    `${API_BASE_URL}/api/v1/todo/user/${userId}?${params.toString()}`,
     {
       credentials: "include",
+      headers: {
+        "Content-Type": "application/json"
+      }
     }
   );
 
@@ -19,10 +25,9 @@ export const fetchTodos = async ({ pageParam, userId }) => {
   return response.json(); // { data, nextCursor }
 };
 
-
 export const createTodo = async (data) => {
   try {
-    const response = await fetch(`/api/v1/todo/create`, {
+    const response = await fetch(`${API_BASE_URL}/api/v1/todo/create`, {
       method: "POST",
       credentials: "include",
       headers: {
@@ -47,9 +52,9 @@ export const createTodo = async (data) => {
 export const updateTodo = async (id, data) => {
   try {
     console.log("SENDING TO BACKEND UPDATE ", id, data);
-    const response = await fetch(`/api/v1/todo/update/${id}`, {
+    const response = await fetch(`${API_BASE_URL}/api/v1/todo/update/${id}`, {
       method: 'PATCH',
-      credentials: 'include',
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
@@ -70,7 +75,7 @@ export const updateTodo = async (id, data) => {
 
 export const deleteTodo = async ({id}) => {
   try {
-    const response = await fetch(`/api/v1/todo/delete/${id}`, {
+    const response = await fetch(`${API_BASE_URL}/api/v1/todo/delete/${id}`, {
       method: "DELETE",
       credentials: "include",
       headers: {
@@ -92,7 +97,7 @@ export const deleteTodo = async ({id}) => {
 
 export const deleteManyTodo = async ({id}) => {
   try {
-    const response = await fetch(`/api/v1/todo/delete/${id}/clear-completed`, {
+    const response = await fetch(`${API_BASE_URL}/api/v1/todo/delete/${id}/clear-completed`, {
       method: "DELETE",
       credentials: "include",
       headers: {
@@ -114,7 +119,7 @@ export const deleteManyTodo = async ({id}) => {
 
 export const reorderTodo = async (data) => {
   try {
-    const response = await fetch("/api/v1/todo/reorder", {
+    const response = await fetch(`${API_BASE_URL}/api/v1/todo/reorder`, {
       method: "PATCH",
       credentials: "include",
       headers: {
