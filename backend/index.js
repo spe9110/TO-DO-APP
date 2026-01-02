@@ -22,10 +22,7 @@ const PORT = process.env.PORT || 5000;
 /* ---------- Core Middleware ---------- */
 
 app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "https://spe9110.github.io"
-  ],
+  origin: process.env.FRONTEND_URL || "https://spe9110.github.io",
   credentials: true
 }));
 
