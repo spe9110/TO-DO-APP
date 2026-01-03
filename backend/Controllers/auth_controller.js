@@ -3,10 +3,12 @@ import { registerAccountSchema } from "../Validation/registerAccount.js";
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import { loginAccountSchema } from "../Validation/loginAccount.js";
-import { transporter } from "../Config/transporter.js";
+// import { transporter } from "../Config/transporter.js";
+import { sendEmail } from "../utils/sendEmail.js";
 import { loadTemplate } from "../Utils/template.js";
 import logger from "../Config/logging.js";
-import { EMAIL_USER } from "../Config/keys.js";
+// import { EMAIL_USER } from "../Config/keys.js";
+
 
 // @desc Create new user
 // @route POST /api/auth/register
@@ -42,28 +44,7 @@ export const register = async (req, res, next) => {
             role: role || 'user',
             password: hashedPassword
         })
-        // current year for email template
-        const year = new Date().getFullYear();
-
-        // Load email template
-        const welcomeTemplate = loadTemplate("welcome.html", {
-            name: newUser.firstName + ' ' + newUser.lastName,
-            email: newUser.email,
-            year: year
-        });
-
-         // Send welcome email
-        const mailOptions = {
-            from: {
-                name: "Spencer Wawaku",
-                address: EMAIL_USER
-            }, 
-            to: newUser.email,
-            subject: "Welcome to To Do App",
-            html: welcomeTemplate,
-        }
-        
-        await transporter.sendMail(mailOptions);
+        // await transporter.sendMail(mailOptions);
 
         // step 6 - remove password from the response
         const newUserResponse = {
@@ -78,6 +59,22 @@ export const register = async (req, res, next) => {
         // step 7 - return the response
         return res.status(201).json({ success: true, message: "User created successfully", user: newUserResponse });
 
+        // current year for email template
+        const year = new Date().getFullYear();
+
+        // background email
+        const welcomeTemplate = loadTemplate("welcome.html", {
+          name: `${newUser.firstName} ${newUser.lastName}`,
+          email: newUser.email,
+          year: year
+        });
+
+        sendEmail({
+          to: newUser.email,
+          subject: "Welcome to To Do App",
+          html: welcomeTemplate,
+          from: "Spencer Wawaku <onboarding@resend.dev>" // optional
+        });
     } catch (error) {
         logger.error("createAccount - error", { error: error.message });
         return next({ status: 500, success: false, message: error.message });
