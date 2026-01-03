@@ -4,7 +4,7 @@ import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import { loginAccountSchema } from "../Validation/loginAccount.js";
 // import { transporter } from "../Config/transporter.js";
-import { sendEmail } from "../utils/sendEmail.js";
+import { sendEmail } from "../Utils/resend.js";
 import { loadTemplate } from "../Utils/template.js";
 import logger from "../Config/logging.js";
 // import { EMAIL_USER } from "../Config/keys.js";
