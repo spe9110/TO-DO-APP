@@ -4,7 +4,8 @@ import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import { loginAccountSchema } from "../Validation/loginAccount.js";
 // import { transporter } from "../Config/transporter.js";
-import { sendEmail } from "../Utils/resend.js";
+// import { sendEmail } from "../Utils/resend.js";
+import { emailQueue } from "../Utils/emailQueue.js";
 import { loadTemplate } from "../Utils/template.js";
 import logger from "../Config/logging.js";
 // import { EMAIL_USER } from "../Config/keys.js";
@@ -46,6 +47,16 @@ export const register = async (req, res, next) => {
         })
         // await transporter.sendMail(mailOptions);
 
+        // Send welcome email (background)
+        emailQueue.add({
+          to: newUser.email,
+          firstName: newUser.firstName
+        }).then(() => {
+          logger.log("📩 Email job added to queue");
+        }).catch(err => {
+          logger.error("❌ Failed to add email job", err.message);
+        });
+
         // step 6 - remove password from the response
         const newUserResponse = {
             _id: newUser._id,
@@ -59,22 +70,6 @@ export const register = async (req, res, next) => {
         // step 7 - return the response
         return res.status(201).json({ success: true, message: "User created successfully", user: newUserResponse });
 
-        // current year for email template
-        const year = new Date().getFullYear();
-
-        // background email
-        const welcomeTemplate = loadTemplate("welcome.html", {
-          name: `${newUser.firstName} ${newUser.lastName}`,
-          email: newUser.email,
-          year: year
-        });
-
-        sendEmail({
-          to: newUser.email,
-          subject: "Welcome to To Do App",
-          html: welcomeTemplate,
-          from: "Spencer Wawaku <onboarding@resend.dev>" // optional
-        });
     } catch (error) {
         logger.error("createAccount - error", { error: error.message });
         return next({ status: 500, success: false, message: error.message });
