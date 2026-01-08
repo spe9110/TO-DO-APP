@@ -11,7 +11,6 @@ import { DarkModeContextProvider } from './context/DarkModeContext.jsx'
 
 const queryClient = new QueryClient();
 
-
 // Use Vite's import.meta.env.MODE to check the environment
 const isDev = import.meta.env.MODE === 'development';
 

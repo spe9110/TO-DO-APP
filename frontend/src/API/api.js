@@ -1,5 +1,4 @@
 import { API_BASE_URL } from "../../Util";
-console.log("API BASE URL:", API_BASE_URL);
 
 export const fetchTodos = async ({ pageParam, userId }) => {
   const limit = 9;
