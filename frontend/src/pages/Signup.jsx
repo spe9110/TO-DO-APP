@@ -6,8 +6,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import { useRegisterMutation } from '../redux/Slice/userSlice';
 import { useNavigate } from 'react-router-dom';
-// import { useSelector, useDispatch } from 'react-redux';
-// import { setCredentials } from '../redux/Slice/authSlice';
+import { useDispatch } from 'react-redux';
+import { setCredentials } from '../redux/Slice/authSlice';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 // import Loader from '../components/Loader';
@@ -78,10 +78,9 @@ const Signup = () => {
     try {
       const res = await registerUser(data).unwrap();
 
-      console.log("REGISTER SUCCESS:", res);
-
-      toast.success("Registration success! Please sign in.");
-
+      dispatch(setCredentials({ ...res }));
+      toast.success("Registration successful! Please sign in.");
+      reset();
       navigate('/signin', { replace: true });
     } catch (error) {
       console.error("REGISTER ERROR:", error);
