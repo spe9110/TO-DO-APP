@@ -1,54 +1,34 @@
-/* Center wrapper */
+/* Container */
 .loader-container {
-  width: 100%;
-  height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  background: radial-gradient(circle at center, #f0f4ff, #dbe1f5);
+  justify-content: center;
 }
 
-/* Beautiful glowing ring loader */
+/* Spinner ring */
 .loader-ring {
-  width: 70px;
-  height: 70px;
+  width: 30px;               /* size of the spinner */
+  height: 30px;
+  border: 4px solid rgba(255, 255, 255, 0.25);
+  border-top: 4px solid #ffffff;
   border-radius: 50%;
-  border: 6px solid transparent;
-  border-top-color: #4f46e5;         /* Indigo */
-  border-right-color: #3b82f6;       /* Blue */
-  border-bottom-color: #6366f1;      /* Purple */
-  animation: spin 1s linear infinite;
-  box-shadow: 0 0 12px rgba(99, 102, 241, 0.6),
-              0 0 20px rgba(59, 130, 246, 0.4);
+  animation: loaderSpin 0.9s linear infinite;
 }
 
-/* Smooth rotation */
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-    filter: hue-rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-    filter: hue-rotate(360deg);
-  }
-}
-
-/* Text styling */
+/* Text */
 .loader-text {
-  margin-top: 12px;
-  font-size: 1.1rem;
-  font-weight: 500;
-  color: #1e3a8a;
-  animation: fade 1.5s ease-in-out infinite alternate;
+  margin-top: 8px;
+  font-size: 14px;
+  color: #ffffff;
 }
 
-@keyframes fade {
+/* Animation */
+@keyframes loaderSpin {
   from {
-    opacity: 0.3;
+    transform: rotate(0deg);
   }
   to {
-    opacity: 1;
+    transform: rotate(360deg);
   }
 }
