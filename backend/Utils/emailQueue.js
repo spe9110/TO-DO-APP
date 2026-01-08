@@ -1,9 +1,12 @@
 import Queue from "bull";
 
+// Create the email queue
 export const emailQueue = new Queue("emailQueue", {
   redis: {
-    host: process.env.REDIS_HOST,
-    port: process.env.REDIS_PORT
+    url: process.env.REDIS_URL,
+    tls: {
+      rejectUnauthorized: false // required for Upstash
+    }
   },
   defaultJobOptions: {
     attempts: 3,

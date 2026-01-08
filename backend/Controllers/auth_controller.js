@@ -48,14 +48,25 @@ export const register = async (req, res, next) => {
         // await transporter.sendMail(mailOptions);
 
         // Send welcome email (background)
-        emailQueue.add({
-          to: newUser.email,
-          firstName: newUser.firstName
-        }).then(() => {
-          logger.log("📩 Email job added to queue");
-        }).catch(err => {
-          logger.error("❌ Failed to add email job", err.message);
-        });
+        if (process.env.REDIS_URL) {
+          try {
+            await emailQueue.add({
+              to: newUser.email,
+              firstName: newUser.firstName
+            });
+
+            logger.info("📩 Welcome email job added to queue", {
+              email: newUser.email
+            });
+          } catch (err) {
+            logger.error("❌ Failed to add welcome email job", {
+              error: err.message,
+              email: newUser.email
+            });
+          }
+        } else {
+          logger.warn("⚠️ REDIS_URL not configured — email notification skipped");
+        }
 
         // step 6 - remove password from the response
         const newUserResponse = {
