@@ -6,11 +6,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import { useRegisterMutation } from '../redux/Slice/userSlice';
 import { useNavigate } from 'react-router-dom';
-<<<<<<< HEAD
-import { useDispatch } from 'react-redux';
-=======
 import { useSelector, useDispatch } from 'react-redux';
->>>>>>> 8702d40 (fix the signup logic)
 import { setCredentials } from '../redux/Slice/authSlice';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { toast } from 'react-toastify';
@@ -68,27 +64,15 @@ const Signup = () => {
         password,
         confirm_password
       }).unwrap();
-<<<<<<< HEAD
-      dispatch(setCredentials({ ...res }));
-      toast.success("Registration successful! Please sign in.");
-      reset();
-      navigate('/signin', { replace: true });
-=======
-
       dispatch(setCredentials({ ...res }));
       toast.success("Registration successful! Please sign in.");
       reset();
       navigate('/');
->>>>>>> 8702d40 (fix the signup logic)
     } catch (error) {
       console.error("Failed to register user: ", error);
       toast.error(error?.data?.message || "Registration failed. Please try again.");
     }
   };
-<<<<<<< HEAD
-=======
-  
->>>>>>> 8702d40 (fix the signup logic)
   return (
     <div className='relative w-full min-h-screen'>
       <div className="w-full h-full absolute top-0 left-0 z-0" style={styleBg}></div>
