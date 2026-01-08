@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom';
 import { FaCheck } from "react-icons/fa6";
 import { useForm } from "react-hook-form";
@@ -6,13 +6,17 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import { useRegisterMutation } from '../redux/Slice/userSlice';
 import { useNavigate } from 'react-router-dom';
+<<<<<<< HEAD
 import { useDispatch } from 'react-redux';
+=======
+import { useSelector, useDispatch } from 'react-redux';
+>>>>>>> 8702d40 (fix the signup logic)
 import { setCredentials } from '../redux/Slice/authSlice';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 // import Loader from '../components/Loader';
 
-const vadationSchema = yup.object({
+const validationSchema = yup.object({
   firstName: yup.string().required("First Name is required"),
   lastName: yup.string().required("Last Name is required"),
   email: yup.string().email("Invalid email format").required("Email is required"),
@@ -36,10 +40,10 @@ const styleBg = {
 
 const Signup = () => {
   const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm({
-    resolver: yupResolver(vadationSchema),
+    resolver: yupResolver(validationSchema),
   });
 
-  // const { userData } = useSelector((state) => state.auth);
+  const { userData } = useSelector((state) => state.auth);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -48,11 +52,11 @@ const Signup = () => {
 
   const [registerUser, { isLoading }] = useRegisterMutation();
 
-  // useEffect(() => {
-  //   if (userData) {
-  //     navigate('/signin');
-  //   }
-  // }, [userData, navigate]);
+  useEffect(() => {
+    if (userData) {
+      navigate('/');
+    }
+  }, [userData, navigate]);
 
   // ✔ FIXED API PAYLOAD (added confirm_password)
   const onSubmit = async ({ firstName, lastName, email, password, confirm_password }) => {
@@ -64,15 +68,27 @@ const Signup = () => {
         password,
         confirm_password
       }).unwrap();
+<<<<<<< HEAD
       dispatch(setCredentials({ ...res }));
       toast.success("Registration successful! Please sign in.");
       reset();
       navigate('/signin', { replace: true });
+=======
+
+      dispatch(setCredentials({ ...res }));
+      toast.success("Registration successful! Please sign in.");
+      reset();
+      navigate('/');
+>>>>>>> 8702d40 (fix the signup logic)
     } catch (error) {
       console.error("Failed to register user: ", error);
       toast.error(error?.data?.message || "Registration failed. Please try again.");
     }
   };
+<<<<<<< HEAD
+=======
+  
+>>>>>>> 8702d40 (fix the signup logic)
   return (
     <div className='relative w-full min-h-screen'>
       <div className="w-full h-full absolute top-0 left-0 z-0" style={styleBg}></div>
