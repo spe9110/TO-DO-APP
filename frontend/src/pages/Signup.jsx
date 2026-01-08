@@ -41,7 +41,7 @@ const Signup = () => {
 
   // const { userData } = useSelector((state) => state.auth);
   const navigate = useNavigate();
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
