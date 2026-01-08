@@ -57,18 +57,17 @@ const Signup = () => {
   // ✔ FIXED API PAYLOAD (added confirm_password)
   const onSubmit = async ({ firstName, lastName, email, password, confirm_password }) => {
     try {
-      await registerUser({
+      const res = await registerUser({
         firstName,
         lastName,
         email,
         password,
         confirm_password
       }).unwrap();
-
-      // dispatch(setCredentials({ ...res }));
+      dispatch(setCredentials({ ...res }));
       toast.success("Registration successful! Please sign in.");
       reset();
-      navigate('/signin');
+      navigate('/signin', { replace: true });
     } catch (error) {
       console.error("Failed to register user: ", error);
       toast.error(error?.data?.message || "Registration failed. Please try again.");
