@@ -15,11 +15,14 @@ import logger from "../Config/logging.js";
 // @route POST /api/auth/register
 // @access Public
 export const register = async (req, res, next) => {
+    console.time("TOTAL /register");
     try {
         logger.info("createAccount - start", { route: req.originalUrl, method: req.method, body: req.body });
 
         // step 1 - Validate the request body
+        console.time("VALIDATION /register");
         const { error } = registerAccountSchema.validate(req.body, { abortEarly: false });
+        console.timeEnd("VALIDATION /register");
         if (error) {
             logger.warn("createAccount - validation failed", { error: error.details[0].message });
             return res.status(400).json({ error: error.details[0].message})
@@ -28,16 +31,21 @@ export const register = async (req, res, next) => {
         const { firstName, lastName, email, password, confirm_password, role } = req.body;
 
         // step 3 - Check if user already exists
+        console.time("CHECK USER /register");
         const existingUser = await User.findOne({ email });
+        console.timeEnd("CHECK USER /register");
         if (existingUser) {
             logger.warn("createAccount - user already exists", { email });
             return next(new Error('User already exists'));
         }
         // step 4 - Hash the password
+        console.time("HASH PASSWORD /register");
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
+        console.timeEnd("HASH PASSWORD /register");
 
         // step 5 - Create a new user
+        console.time("CREATE USER /register");
         const newUser = await User.create({
             firstName,
             lastName,
@@ -45,9 +53,10 @@ export const register = async (req, res, next) => {
             role: role || 'user',
             password: hashedPassword
         })
-        // await transporter.sendMail(mailOptions);
+        console.timeEnd("CREATE USER /register");
 
         // Send welcome email (background)
+        console.time("QUEUE EMAIL /register");
         if (process.env.REDIS_URL) {
           try {
             await emailQueue.add({
@@ -67,8 +76,10 @@ export const register = async (req, res, next) => {
         } else {
           logger.warn("⚠️ REDIS_URL not configured — email notification skipped");
         }
+        console.timeEnd("QUEUE EMAIL /register");
 
         // step 6 - remove password from the response
+        console.timeEnd("TOTAL /register");
         const newUserResponse = {
             _id: newUser._id,
             firstName: newUser.firstName,
@@ -76,12 +87,14 @@ export const register = async (req, res, next) => {
             email: newUser.email,
             role: newUser.role
         }
+        console.timeEnd("TOTAL /register");
 
         logger.info("createAccount - user created successfully", { userId: newUser._id, email: newUser.email });
         // step 7 - return the response
         return res.status(201).json({ success: true, message: "User created successfully", user: newUserResponse });
 
     } catch (error) {
+        console.timeEnd("TOTAL /register");
         logger.error("createAccount - error", { error: error.message });
         return next({ status: 500, success: false, message: error.message });
     }

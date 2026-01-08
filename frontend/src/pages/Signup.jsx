@@ -218,9 +218,9 @@ const Signup = () => {
 
               <button
                 type="submit"
-                disabled={isSubmitting || isLoading} 
+                disabled={isLoading} 
               className='text-white font-semibold mt-3 w-full px-3 py-1 border-none bg-blue-400 hover:bg-blue-500 rounded-md'>
-                {isSubmitting || isLoading ? 'Loading...' : 'Sign up'}
+                {isLoading ? 'Creating account…' : 'Sign up'}
               </button>
 
               <div className="mt-5 text-sm text-center text-gray-600">
