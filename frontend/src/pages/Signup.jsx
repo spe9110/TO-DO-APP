@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom';
 import { FaCheck } from "react-icons/fa6";
 import { useForm } from "react-hook-form";
@@ -6,11 +6,11 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import { useRegisterMutation } from '../redux/Slice/userSlice';
 import { useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import { setCredentials } from '../redux/Slice/authSlice';
+// import { useSelector, useDispatch } from 'react-redux';
+// import { setCredentials } from '../redux/Slice/authSlice';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { toast } from 'react-toastify';
-import Loader from '../components/Loader';
+// import Loader from '../components/Loader';
 
 const vadationSchema = yup.object({
   firstName: yup.string().required("First Name is required"),
@@ -35,7 +35,7 @@ const styleBg = {
 };
 
 const Signup = () => {
-  const { register, handleSubmit, reset, formState: { errors } } = useForm({
+  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm({
     resolver: yupResolver(vadationSchema),
   });
 
@@ -55,26 +55,39 @@ const Signup = () => {
   // }, [userData, navigate]);
 
   // ✔ FIXED API PAYLOAD (added confirm_password)
-  const onSubmit = async ({ firstName, lastName, email, password, confirm_password }) => {
-    try {
-      await registerUser({
-        firstName,
-        lastName,
-        email,
-        password,
-        confirm_password
-      }).unwrap();
+  // const onSubmit = async ({ firstName, lastName, email, password, confirm_password }) => {
+  //   try {
+  //     await registerUser({
+  //       firstName,
+  //       lastName,
+  //       email,
+  //       password,
+  //       confirm_password
+  //     }).unwrap();
 
-      // dispatch(setCredentials({ ...res }));
-      toast.success("Registration successful! Please sign in.");
-      reset();
-      navigate('/signin');
+  //     // dispatch(setCredentials({ ...res }));
+  //     toast.success("Registration successful! Please sign in.");
+  //     reset();
+  //     navigate('/signin');
+  //   } catch (error) {
+  //     console.error("Failed to register user: ", error);
+  //     toast.error(error?.data?.message || "Registration failed. Please try again.");
+  //   }
+  // };
+  const onSubmit = async (data) => {
+    try {
+      const res = await registerUser(data).unwrap();
+
+      console.log("REGISTER SUCCESS:", res);
+
+      toast.success("Registration success! Please sign in.");
+
+      navigate('/signin', { replace: true });
     } catch (error) {
-      console.error("Failed to register user: ", error);
-      toast.error(error?.data?.message || "Registration failed. Please try again.");
+      console.error("REGISTER ERROR:", error);
+      toast.error(error?.data?.message || "Registration failed");
     }
   };
-
   // if (isLoading) return <Loader />;
 
   return (
@@ -222,9 +235,9 @@ const Signup = () => {
 
               <button
                 type="submit"
-                disabled={isLoading} 
+                disabled={isSubmitting || isLoading} 
               className='text-white font-semibold mt-3 w-full px-3 py-1 border-none bg-blue-400 hover:bg-blue-500 rounded-md'>
-                {isLoading ? 'Loading...' : 'Sign up'}
+                {isSubmitting || isLoading ? 'Loading...' : 'Sign up'}
               </button>
 
               <div className="mt-5 text-sm text-center text-gray-600">
