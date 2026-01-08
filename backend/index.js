@@ -22,7 +22,7 @@ const PORT = process.env.PORT || 5000;
 /* ---------- Core Middleware ---------- */
 
 app.use(cors({
-  origin: "https://spe9110.github.io",
+  origin: "https://to-do-app-fr.onrender.com",
   credentials: true
 }));
 
