@@ -55,40 +55,25 @@ const Signup = () => {
   // }, [userData, navigate]);
 
   // ✔ FIXED API PAYLOAD (added confirm_password)
-  // const onSubmit = async ({ firstName, lastName, email, password, confirm_password }) => {
-  //   try {
-  //     await registerUser({
-  //       firstName,
-  //       lastName,
-  //       email,
-  //       password,
-  //       confirm_password
-  //     }).unwrap();
-
-  //     // dispatch(setCredentials({ ...res }));
-  //     toast.success("Registration successful! Please sign in.");
-  //     reset();
-  //     navigate('/signin');
-  //   } catch (error) {
-  //     console.error("Failed to register user: ", error);
-  //     toast.error(error?.data?.message || "Registration failed. Please try again.");
-  //   }
-  // };
-  const onSubmit = async (data) => {
+  const onSubmit = async ({ firstName, lastName, email, password, confirm_password }) => {
     try {
-      const res = await registerUser(data).unwrap();
+      await registerUser({
+        firstName,
+        lastName,
+        email,
+        password,
+        confirm_password
+      }).unwrap();
 
-      dispatch(setCredentials({ ...res }));
+      // dispatch(setCredentials({ ...res }));
       toast.success("Registration successful! Please sign in.");
       reset();
-      navigate('/signin', { replace: true });
+      navigate('/signin');
     } catch (error) {
-      console.error("REGISTER ERROR:", error);
-      toast.error(error?.data?.message || "Registration failed");
+      console.error("Failed to register user: ", error);
+      toast.error(error?.data?.message || "Registration failed. Please try again.");
     }
   };
-  // if (isLoading) return <Loader />;
-
   return (
     <div className='relative w-full min-h-screen'>
       <div className="w-full h-full absolute top-0 left-0 z-0" style={styleBg}></div>
