@@ -35,29 +35,29 @@ const styleBg = {
 };
 
 const Signup = () => {
-  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm({
+  const { register, handleSubmit, reset, formState: { errors } } = useForm({
     resolver: yupResolver(vadationSchema),
   });
 
-  const { userData } = useSelector((state) => state.auth);
+  // const { userData } = useSelector((state) => state.auth);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const [registerUser, { isLoading }] = useRegisterMutation();
 
-  useEffect(() => {
-    if (userData) {
-      navigate('/signin');
-    }
-  }, [userData, navigate]);
+  // useEffect(() => {
+  //   if (userData) {
+  //     navigate('/signin');
+  //   }
+  // }, [userData, navigate]);
 
   // ✔ FIXED API PAYLOAD (added confirm_password)
   const onSubmit = async ({ firstName, lastName, email, password, confirm_password }) => {
     try {
-      const res = await registerUser({
+      await registerUser({
         firstName,
         lastName,
         email,
@@ -65,7 +65,7 @@ const Signup = () => {
         confirm_password
       }).unwrap();
 
-      dispatch(setCredentials({ ...res }));
+      // dispatch(setCredentials({ ...res }));
       toast.success("Registration successful! Please sign in.");
       reset();
       navigate('/signin');
@@ -75,7 +75,7 @@ const Signup = () => {
     }
   };
 
-  if (isLoading) return <Loader />;
+  // if (isLoading) return <Loader />;
 
   return (
     <div className='relative w-full min-h-screen'>
@@ -222,9 +222,9 @@ const Signup = () => {
 
               <button
                 type="submit"
-                disabled={isSubmitting || isLoading} 
+                disabled={isLoading} 
               className='text-white font-semibold mt-3 w-full px-3 py-1 border-none bg-blue-400 hover:bg-blue-500 rounded-md'>
-                {isSubmitting || isLoading ? 'Loading...' : 'Sign up'}
+                {isLoading ? 'Loading...' : 'Sign up'}
               </button>
 
               <div className="mt-5 text-sm text-center text-gray-600">

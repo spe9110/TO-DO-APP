@@ -19,11 +19,11 @@ createRoot(document.getElementById('root')).render(
 <StrictMode>
   <QueryClientProvider client={queryClient}>
       <DarkModeContextProvider>
-    <Provider store={store}>
-        <HashRouter>
-          <App />
-        </HashRouter>
-    </Provider>
+        <Provider store={store}>
+            <HashRouter>
+              <App />
+            </HashRouter>
+        </Provider>
       </DarkModeContextProvider>
     {isDev && <ReactQueryDevtools initialIsOpen={false} />}
   </QueryClientProvider>
