@@ -1,1 +1,0 @@
-import{w as r}from"./index-DrEcmgLD.js";import"./loader-D0vAg2Oo.js";const e=()=>r.jsxs("div",{className:"loader-container",children:[r.jsx("div",{className:"loader-ring"}),r.jsx("p",{className:"loader-text",children:"Loading..."})]});export{e as L};
