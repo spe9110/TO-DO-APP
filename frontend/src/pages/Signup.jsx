@@ -50,7 +50,7 @@ const Signup = () => {
 
   useEffect(() => {
     if (userData) {
-      navigate('/');
+      navigate('/signin');
     }
   }, [userData, navigate]);
 
@@ -65,9 +65,9 @@ const Signup = () => {
         confirm_password
       }).unwrap();
       dispatch(setCredentials({ ...res }));
-      toast.success("Registration successful! Please sign in.");
+      toast.success("Registration successful.");
       reset();
-      navigate('/');
+      navigate('/signin');
     } catch (error) {
       console.error("Failed to register user: ", error);
       toast.error(error?.data?.message || "Registration failed. Please try again.");
