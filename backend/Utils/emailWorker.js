@@ -1,30 +1,31 @@
-import { emailQueue } from "./emailQueue.js";
 import { sendEmail } from "./emailService.js";
 
-emailQueue.process(async (job) => {
-  const { to, firstName } = job.data;
+export const sendWelcomeEmailAsync = (user) => {
+  setImmediate(async () => {
+    try {
+      const html = `
+        <h2>Welcome to To Do App 🎉</h2>
+        <p>Hello <strong>${user.firstName}</strong>,</p>
+        <p>We’re happy to have you on board.</p>
+        <p>Start organizing your tasks 🚀</p>
+        <br/>
+        <p>— To Do App Team</p>
+      `;
 
-  const html = `
-    <h2>Welcome to To Do App 🎉</h2>
-    <p>Hello <strong>${firstName}</strong>,</p>
-    <p>We’re happy to have you on board.</p>
-    <p>Start organizing your tasks and boost your productivity 🚀</p>
-    <br/>
-    <p>— To Do App Team</p>
-  `;
+      await Promise.race([
+        sendEmail({
+          from: `"To Do App" <${process.env.EMAIL_USER}>`,
+          to: user.email,
+          subject: "Welcome to To Do App 🎉",
+          html
+        }),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error("SMTP timeout")), 5000)
+        )
+      ]);
 
-  await sendEmail({
-    from: `"To Do App" <${process.env.MAIL_USER}>`,
-    to,
-    subject: "Welcome to To Do App 🎉",
-    html
+    } catch (err) {
+      console.warn("Welcome email skipped:", err.message);
+    }
   });
-});
-
-emailQueue.on("completed", (job) => {
-  console.log(`✅ Welcome email sent to ${job.data.to}`);
-});
-
-emailQueue.on("failed", (job, err) => {
-  console.error(`❌ Email failed for ${job.data.to}`, err.message);
-});
+};

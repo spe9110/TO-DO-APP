@@ -3,12 +3,8 @@ import { registerAccountSchema } from "../Validation/registerAccount.js";
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import { loginAccountSchema } from "../Validation/loginAccount.js";
-// import { transporter } from "../Config/transporter.js";
-// import { sendEmail } from "../Utils/resend.js";
-import { emailQueue } from "../Utils/emailQueue.js";
-import { loadTemplate } from "../Utils/template.js";
 import logger from "../Config/logging.js";
-// import { EMAIL_USER } from "../Config/keys.js";
+import { sendWelcomeEmailAsync } from "../Utils/emailWorker.js";
 
 
 // @desc Create new user
@@ -55,31 +51,8 @@ export const register = async (req, res, next) => {
         })
         console.timeEnd("CREATE USER /register");
 
-        // Send welcome email (background)
-        console.time("QUEUE EMAIL /register");
-        if (process.env.REDIS_URL) {
-          try {
-            await emailQueue.add({
-              to: newUser.email,
-              firstName: newUser.firstName
-            });
-
-            logger.info("📩 Welcome email job added to queue", {
-              email: newUser.email
-            });
-          } catch (err) {
-            logger.error("❌ Failed to add welcome email job", {
-              error: err.message,
-              email: newUser.email
-            });
-          }
-        } else {
-          logger.warn("⚠️ REDIS_URL not configured — email notification skipped");
-        }
-        console.timeEnd("QUEUE EMAIL /register");
 
         // step 6 - remove password from the response
-        console.timeEnd("TOTAL /register");
         const newUserResponse = {
             _id: newUser._id,
             firstName: newUser.firstName,
@@ -91,8 +64,9 @@ export const register = async (req, res, next) => {
 
         logger.info("createAccount - user created successfully", { userId: newUser._id, email: newUser.email });
         // step 7 - return the response
-        return res.status(201).json({ success: true, message: "User created successfully", user: newUserResponse });
-
+        res.status(201).json({ success: true, message: "User created successfully", user: newUserResponse });
+         // ✅ email en background (APRÈS response)
+        sendWelcomeEmailAsync(newUser);
     } catch (error) {
         console.timeEnd("TOTAL /register");
         logger.error("createAccount - error", { error: error.message });
