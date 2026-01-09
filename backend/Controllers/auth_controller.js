@@ -10,69 +10,90 @@ import { sendWelcomeEmailAsync } from "../Utils/emailWorker.js";
 // @desc Create new user
 // @route POST /api/auth/register
 // @access Public
-export const register = async (req, res, next) => {
-    console.time("TOTAL /register");
-    try {
-        logger.info("createAccount - start", { route: req.originalUrl, method: req.method, body: req.body });
+export const register = async (req, res) => {
+  console.time("TOTAL /register");
 
-        // step 1 - Validate the request body
-        console.time("VALIDATION /register");
-        const { error } = registerAccountSchema.validate(req.body, { abortEarly: false });
-        console.timeEnd("VALIDATION /register");
-        if (error) {
-            logger.warn("createAccount - validation failed", { error: error.details[0].message });
-            return res.status(400).json({ error: error.details[0].message})
-        }
-        // step 2 - Get data from request body
-        const { firstName, lastName, email, password, confirm_password, role } = req.body;
-
-        // step 3 - Check if user already exists
-        console.time("CHECK USER /register");
-        const existingUser = await User.findOne({ email });
-        console.timeEnd("CHECK USER /register");
-        if (existingUser) {
-            logger.warn("createAccount - user already exists", { email });
-            return next(new Error('User already exists'));
-        }
-        // step 4 - Hash the password
-        console.time("HASH PASSWORD /register");
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
-        console.timeEnd("HASH PASSWORD /register");
-
-        // step 5 - Create a new user
-        console.time("CREATE USER /register");
-        const newUser = await User.create({
-            firstName,
-            lastName,
-            email,
-            role: role || 'user',
-            password: hashedPassword
-        })
-        console.timeEnd("CREATE USER /register");
-
-
-        // step 6 - remove password from the response
-        const newUserResponse = {
-            _id: newUser._id,
-            firstName: newUser.firstName,
-            lastName: newUser.lastName,
-            email: newUser.email,
-            role: newUser.role
-        }
-        console.timeEnd("TOTAL /register");
-
-        logger.info("createAccount - user created successfully", { userId: newUser._id, email: newUser.email });
-        // step 7 - return the response
-        res.status(201).json({ success: true, message: "User created successfully", user: newUserResponse });
-         // ✅ email en background (APRÈS response)
-        sendWelcomeEmailAsync(newUser);
-    } catch (error) {
-        console.timeEnd("TOTAL /register");
-        logger.error("createAccount - error", { error: error.message });
-        return next({ status: 500, success: false, message: error.message });
+  try {
+    const { error } = registerAccountSchema.validate(req.body, { abortEarly: false });
+    if (error) {
+      return res.status(400).json({
+        success: false,
+        message: error.details[0].message,
+      });
     }
-}
+
+    const { firstName, lastName, email, password, role } = req.body;
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(409).json({
+        success: false,
+        message: "User already exists",
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = await User.create({
+      firstName,
+      lastName,
+      email,
+      role: role || "user",
+      password: hashedPassword,
+    });
+
+    const secret = process.env.JWT_SECRET;
+    if (!secret) {
+      logger.error("JWT_SECRET missing");
+      return res.status(500).json({
+        success: false,
+        message: "Server misconfiguration",
+      });
+    }
+
+    const accessToken = jwt.sign(
+      { id: newUser._id, email: newUser.email, role: newUser.role },
+      secret,
+      { expiresIn: process.env.JWT_EXPIRE || "1h" }
+    );
+
+    res.cookie("AccessToken", accessToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      maxAge: 60 * 60 * 1000,
+    });
+
+    res.status(201).json({
+      success: true,
+      message: "User registered and logged in",
+      accessToken,
+      user: {
+        id: newUser._id,
+        firstName: newUser.firstName,
+        lastName: newUser.lastName,
+        email: newUser.email,
+        role: newUser.role,
+      },
+    });
+
+    // fire & forget
+    setImmediate(() => {
+      sendWelcomeEmailAsync(newUser).catch(err =>
+        logger.error("Welcome email failed", err)
+      );
+    });
+
+  } catch (err) {
+    logger.error("register error", err);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  } finally {
+    console.timeEnd("TOTAL /register");
+  }
+};
 
 // @desc Login user
 // @route POST /api/auth/login

@@ -1,16 +1,14 @@
-import React from "react";
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 const PrivateRoute = () => {
   const { userData } = useSelector((state) => state.auth);
+  const location = useLocation();
 
-  // If not logged in, redirect to /signin
   if (!userData) {
-    return <Navigate to="/signin" replace />;
+    return <Navigate to="/signin" replace state={{ from: location }} />;
   }
 
-  // If logged in → allow access
   return <Outlet />;
 };
 
