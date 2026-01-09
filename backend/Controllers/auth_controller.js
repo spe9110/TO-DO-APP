@@ -79,9 +79,13 @@ export const register = async (req, res) => {
 
     // fire & forget
     setImmediate(() => {
-      sendWelcomeEmailAsync(newUser).catch(err =>
-        logger.error("Welcome email failed", err)
-      );
+      sendWelcomeEmailAsync(newUser).catch((err) => {
+        logger.warn("Welcome email failed", {
+          message: err.message,
+          status: err?.response?.status,
+          body: err?.response?.body,
+        });
+      });
     });
 
   } catch (err) {
