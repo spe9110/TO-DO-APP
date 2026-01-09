@@ -26,10 +26,10 @@ function App() {
         <CookiesBanner />
         <Routes>
           {/* Public Routes */}
-          <Route path="/signin" element={<Signin />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/unauthorized" element={<Unauthorized />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="signin" element={<Signin />} />
+          <Route path="signup" element={<Signup />} />
+          <Route path="unauthorized" element={<Unauthorized />} />
+          <Route path="reset-password" element={<ResetPassword />} />
 
           {/* Protected Routes */}
           <Route element={<PrivateRoute />}>
@@ -45,3 +45,5 @@ function App() {
 }
 
 export default App
+
+// npm install --save gh-pages

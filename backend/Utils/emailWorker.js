@@ -12,20 +12,14 @@ export const sendWelcomeEmailAsync = (user) => {
         <p>— To Do App Team</p>
       `;
 
-      await Promise.race([
-        sendEmail({
-          from: `"To Do App" <${process.env.EMAIL_USER}>`,
-          to: user.email,
-          subject: "Welcome to To Do App 🎉",
-          html
-        }),
-        new Promise((_, reject) =>
-          setTimeout(() => reject(new Error("SMTP timeout")), 5000)
-        )
-      ]);
+      await sendEmail({
+        to: user.email,
+        subject: "Welcome to To Do App 🎉",
+        html
+      });
 
     } catch (err) {
-      console.warn("Welcome email skipped:", err.message);
+      console.warn("Welcome email failed (ignored):", err.message);
     }
   });
 };
