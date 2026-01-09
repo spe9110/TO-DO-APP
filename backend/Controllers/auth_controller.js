@@ -68,13 +68,11 @@ export const register = async (req, res) => {
       success: true,
       message: "User registered and logged in",
       accessToken,
-      user: {
-        id: newUser._id,
-        firstName: newUser.firstName,
-        lastName: newUser.lastName,
-        email: newUser.email,
-        role: newUser.role,
-      },
+      id: newUser._id,
+      firstName: newUser.firstName,
+      lastName: newUser.lastName,
+      email: newUser.email,
+      role: newUser.role
     });
 
     // fire & forget

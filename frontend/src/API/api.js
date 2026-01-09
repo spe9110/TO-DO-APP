@@ -1,6 +1,6 @@
 import { API_BASE_URL } from "../../Util";
 
-export const fetchTodos = async ({ pageParam, userId }) => {
+export const fetchTodos = async ({ pageParam, userId, token }) => {
   const limit = 9;
 
   const params = new URLSearchParams({ limit });
@@ -14,7 +14,8 @@ export const fetchTodos = async ({ pageParam, userId }) => {
     {
       credentials: "include",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`, 
       }
     }
   );
