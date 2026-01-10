@@ -1,21 +1,23 @@
 import { API_BASE_URL } from "../../Util";
 
-export const fetchTodos = async ({ pageParam, userId, token }) => {
+export const fetchTodos = async ({ pageParam, userId }) => {
   const limit = 9;
 
   const params = new URLSearchParams({ limit });
 
+  
   if (pageParam !== null && pageParam !== undefined) {
     params.append("cursor", pageParam);
   }
-  
+  const token = JSON.parse(localStorage.getItem("userData"))?.accessToken;
+
   const response = await fetch(
     `${API_BASE_URL}/api/v1/todo/user/${userId}?${params.toString()}`,
     {
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`, 
+        Authorization: `Bearer ${token}`,
       }
     }
   );
@@ -26,12 +28,14 @@ export const fetchTodos = async ({ pageParam, userId, token }) => {
 };
 
 export const createTodo = async (data) => {
+  const token = JSON.parse(localStorage.getItem("userData"))?.accessToken;
   try {
     const response = await fetch(`${API_BASE_URL}/api/v1/todo/create`, {
       method: "POST",
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(data),
     });
@@ -50,6 +54,7 @@ export const createTodo = async (data) => {
 
 // PATCH is better than PUT
 export const updateTodo = async (id, data) => {
+  const token = JSON.parse(localStorage.getItem("userData"))?.accessToken;
   try {
     console.log("SENDING TO BACKEND UPDATE ", id, data);
     const response = await fetch(`${API_BASE_URL}/api/v1/todo/update/${id}`, {
@@ -57,6 +62,7 @@ export const updateTodo = async (id, data) => {
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(data),
     })
@@ -74,12 +80,14 @@ export const updateTodo = async (id, data) => {
 }
 
 export const deleteTodo = async ({id}) => {
+  const token = JSON.parse(localStorage.getItem("userData"))?.accessToken;
   try {
     const response = await fetch(`${API_BASE_URL}/api/v1/todo/delete/${id}`, {
       method: "DELETE",
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
     });
 
@@ -96,12 +104,14 @@ export const deleteTodo = async ({id}) => {
 };
 
 export const deleteManyTodo = async ({id}) => {
+  const token = JSON.parse(localStorage.getItem("userData"))?.accessToken;
   try {
     const response = await fetch(`${API_BASE_URL}/api/v1/todo/delete/${id}/clear-completed`, {
       method: "DELETE",
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
     });
 
@@ -118,12 +128,14 @@ export const deleteManyTodo = async ({id}) => {
 }
 
 export const reorderTodo = async (data) => {
+  const token = JSON.parse(localStorage.getItem("userData"))?.accessToken;
   try {
     const response = await fetch(`${API_BASE_URL}/api/v1/todo/reorder`, {
       method: "PATCH",
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(data), // { order: [...] }
     });
