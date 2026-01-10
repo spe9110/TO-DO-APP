@@ -78,9 +78,7 @@ const Home = () => {
     setSearchParams({ filter: value });
   };
 
-  const isAuthReady = Boolean(
-    userData?.id && userData?.accessToken
-  );
+  const isAuthReady = Boolean(userData?.id && userData?.accessToken);
 
   // Fetch data with useInfiniteQuery
   const { data: todos, status, error,
@@ -246,16 +244,6 @@ const Home = () => {
   const initials = `${firstName.charAt(0) || ''}${lastName.charAt(0) || ''}`.toUpperCase();
   console.log('current userData', userData);
 
-   useEffect(() => {
-    if (!userData) {
-      navigate("/signin", { replace: true });
-    }
-  }, [userData, navigate]);
-
-  if (!isAuthReady) {
-    return <Loader />;
-  }
-
   const handleLogout = async (e) => {
     e.preventDefault();
     try {
@@ -324,9 +312,7 @@ const Home = () => {
     e.currentTarget.classList.remove("opacity-50");
   };
 
-  if (status === "pending" || status === "loading") {
-    return <Loader />;
-  }
+  if(status === "loading") return <Loader />;
 
   if(error) {
     return <div className="w-full min-h-screen flex justify-center items-center bg-gray-950 dark:bg-gray-50 dark:text-white">

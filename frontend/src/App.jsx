@@ -1,4 +1,4 @@
-import { lazy } from "react"
+import { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom"
 
 const Home = lazy(() => import("./pages/Home"));
@@ -10,6 +10,7 @@ const PrivateRoute = lazy(() => import("./components/PrivateRoute"));
 const ErrorBoundary = lazy(() => import("./components/ErrorBoundary"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const PageNotFound = lazy(() => import("./components/PageNotFound"));
+const Loader = lazy(() => import("./components/Loader"));
 
 import { ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
@@ -19,7 +20,7 @@ import { CookiesBanner } from "./components/CookieConsent"
 function App() {
 
   return (
-    <div>
+    <Suspense fallback={<Loader />}>
       <ErrorBoundary >
         <ToastContainer position="bottom-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick theme="colored" />
         {/* Here where to add the cookies banner */}
@@ -40,10 +41,11 @@ function App() {
           </Route>
         </Routes>
       </ErrorBoundary>      
-    </div>
+    </Suspense>
   )
 }
 
 export default App
 
 // npm install --save gh-pages
+// Sans Suspense = écran blanc garanti

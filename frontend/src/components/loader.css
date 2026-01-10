@@ -6,6 +6,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  background-color: rgba(2, 35, 180, 0.5); /* semi-transparent background */
 }
 
 /* Spinner ring */
