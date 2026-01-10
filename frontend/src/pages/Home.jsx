@@ -1,4 +1,4 @@
-import { useState, useRef, useMemo } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import { FaPlus } from "react-icons/fa6";
 import { useLogoutMutation } from '../redux/Slice/userSlice';
 import { useForm } from "react-hook-form";
@@ -78,6 +78,10 @@ const Home = () => {
     setSearchParams({ filter: value });
   };
 
+  const isAuthReady = Boolean(
+    userData?.id && userData?.accessToken
+  );
+
   // Fetch data with useInfiniteQuery
   const { data: todos, status, error,
     isFetchingNextPage,
@@ -87,9 +91,12 @@ const Home = () => {
     queryFn: ({ pageParam }) => fetchTodos({ pageParam, userId: userData?.id }),
     initialPageParam: null,
     getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
-    enabled: !!userData?.id, 
+    // enabled: !!userData?.id,
+    enabled: isAuthReady,
+    retry: 3,
+    retryDelay: attempt => Math.min(1000 * 2 ** attempt, 5000),
     refetchOnWindowFocus: false,
-    staleTime: 5 * 60 * 1000,
+    // staleTime: 5 * 60 * 1000,
   });
 
   console.log('todo data from React query tanstack: ', todos);
@@ -239,7 +246,15 @@ const Home = () => {
   const initials = `${firstName.charAt(0) || ''}${lastName.charAt(0) || ''}`.toUpperCase();
   console.log('current userData', userData);
 
-  if (!userData) return;
+   useEffect(() => {
+    if (!userData) {
+      navigate("/signin", { replace: true });
+    }
+  }, [userData, navigate]);
+
+  if (!isAuthReady) {
+    return <Loader />;
+  }
 
   const handleLogout = async (e) => {
     e.preventDefault();
@@ -309,7 +324,9 @@ const Home = () => {
     e.currentTarget.classList.remove("opacity-50");
   };
 
-  if(status === "pending") return <Loader />;
+  if (status === "pending" || status === "loading") {
+    return <Loader />;
+  }
 
   if(error) {
     return <div className="w-full min-h-screen flex justify-center items-center bg-gray-950 dark:bg-gray-50 dark:text-white">
